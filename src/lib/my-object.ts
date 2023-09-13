@@ -1,5 +1,5 @@
-import * as flat from "flat";
-import { isNumber } from "./regex";
+import * as flat from 'flat';
+import { isNumber } from './regex';
 export default class MyObject {
   static filterDuplicate(arr: any[]) {
     return arr.filter(function (item, pos) {

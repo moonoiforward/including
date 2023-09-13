@@ -1,8 +1,10 @@
-import MyObject from "./my-object";
-import { HttpClient } from "./http-client";
-import { Identity } from "../models/Identity";
-import { Include, IncludeInterface } from "../models/Include";
-import { Session } from "../models/Session";
+import MyObject from './my-object';
+import MyString from './my-string';
+import { HttpClient } from './http-client';
+import { Identity } from '../models/Identity';
+import { Include, IncludeInterface } from '../models/Include';
+import { isNotNumber } from './regex';
+import { Session } from '../models/Session';
 import {
   createIdentities,
   createQuery,
@@ -12,8 +14,67 @@ import {
   mapParams,
   replaceUrl,
 } from "./mapping";
-import { isNotNumber } from "./regex";
-import MyString from "./my-string";
+
+export interface IIncludingParam {
+  replaces?: any;
+  headers?: any;
+  list: IncludeInterface[];
+  timeout?: number;
+}
+export function including(param: IIncludingParam) {
+  return new Promise((resolveMain, rejectMain) => {
+    const list: Include[] = param.list.map((item) => Include.fromJSON(item));
+    const id = MyString.generateId();
+    Session.initSession(id, {
+      headers: param.headers,
+      replaces: param.replaces,
+      timeout: param.timeout,
+    });
+    const results: any = {};
+    const promises = [];
+    for (let item of list) {
+      const promise = request(item, {
+        sessionId: id,
+      });
+      promise
+        .then((data: any) => {
+          results[item.model] = data;
+          if (item.onDone) {
+            try {
+              if (data.isError) {
+                item.onDone(data.error, null);
+              } else {
+                item.onDone(null, data);
+              }
+            } catch (error) {}
+          }
+        })
+        .catch((err) => {
+          if (item.onDone) {
+            try {
+              item.onDone(err, null);
+            } catch (error) {}
+          }
+          results[item.model] = {
+            errror: err,
+          };
+        });
+      promises.push(promise);
+    }
+    Promise.all(promises)
+      .then(async (_results) => {
+        resolveMain(results);
+        if (Session.isSaveLogs) {
+          try {
+            await Session.writeLog(id);
+          } catch (error) {}
+        }
+        Session.clearSession(id);
+      })
+      .catch((e) => {});
+  });
+}
+
 function childrening(
   inc: Include,
   {
@@ -152,7 +213,7 @@ function requestForChildren({
       headers: inc._headers || headers,
       query: inc._query || query,
       body: inc._body || body,
-      timeout: inc.timeout,
+      timeout: inc.timeout || Session.getTimeout(sessionId),
     };
     let url = replaceUrl(inc.url, Session.getReplaces(sessionId));
     await httpClient
@@ -335,7 +396,7 @@ function request(
         ...inc.headers,
       },
       body: inc.body,
-      timeout: inc.timeout,
+      timeout: inc.timeout || Session.getTimeout(sessionId),
     };
     httpClient
       .request(url, params)
@@ -433,62 +494,4 @@ function selectsAndExcludes(data: any, inc: Include) {
     return Object.keys(unflatten).map((key) => unflatten[key]);
   }
   return MyObject.unflatten(selectData);
-}
-
-export interface IIncludingParam {
-  replaces?: any;
-  headers?: any;
-  list: IncludeInterface[];
-}
-export function including(param: IIncludingParam) {
-  return new Promise((resolveMain, rejectMain) => {
-    const list: Include[] = param.list?.map((item) => Include.fromJSON(item));
-    const id = MyString.generateId();
-    Session.initSession(id, {
-      headers: param.headers,
-      replaces: param.replaces,
-    });
-    const results: any = {};
-    const promises = [];
-    for (let item of list) {
-      const promise = request(item, {
-        sessionId: id,
-      });
-      promise
-        .then((data: any) => {
-          results[item.model] = data;
-          if (item.onDone) {
-            try {
-              if (data.isError) {
-                item.onDone(data.error, null);
-              } else {
-                item.onDone(null, data);
-              }
-            } catch (error) {}
-          }
-        })
-        .catch((err) => {
-          if (item.onDone) {
-            try {
-              item.onDone(err, null);
-            } catch (error) {}
-          }
-          results[item.model] = {
-            errror: err,
-          };
-        });
-      promises.push(promise);
-    }
-    Promise.all(promises)
-      .then(async (_results) => {
-        resolveMain(results);
-        if (Session.isSaveLogs) {
-          try {
-            await Session.writeLog(id);
-          } catch (error) {}
-        }
-        Session.clearSession(id);
-      })
-      .catch((e) => {});
-  });
 }

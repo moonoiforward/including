@@ -1,12 +1,23 @@
 import { promises as fs } from "fs";
 export class Session {
   static isSaveLogs: boolean = false;
-  static data: any = {};
+  static data: {
+    [sessionId: string]: {
+      headers: any;
+      session: any;
+      replaces: any;
+      timeout: number;
+      logs: any[];
+    };
+  } = {};
   static setSaveLogs(isSaveLogs: boolean) {
     Session.isSaveLogs = isSaveLogs;
   }
   static insertLog(id: string, value: any) {
     Session.data[id].logs.push(value);
+  }
+  static getTimeout(id: string) {
+    return Session.data[id].timeout;
   }
   static getLogs(id: string) {
     return Session.data[id].logs;
@@ -27,9 +38,11 @@ export class Session {
     Session.data[id].session[key] = value;
   }
   static initSession(id: string, params: any) {
+    const timeoutDefault = 1000 * 60 * 2;
     Session.data[id] = {
       headers: params?.headers || {},
       replaces: params?.replaces || {},
+      timeout: params?.timeout || timeoutDefault,
       session: {},
       logs: [],
     };

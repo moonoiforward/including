@@ -1,7 +1,7 @@
-import { Identity } from "../models/Identity";
-import { Include } from "../models/Include";
-import { Session } from "../models/Session";
-import { isNotNumber } from "./regex";
+import { Identity } from '../models/Identity';
+import { Include } from '../models/Include';
+import { isNotNumber } from './regex';
+import { Session } from '../models/Session';
 export function replaceUrl(url: string, replaces: any) {
   Object.keys(replaces).forEach((key) => {
     url = url.replace(key, replaces[key]);
