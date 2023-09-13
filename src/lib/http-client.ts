@@ -1,11 +1,12 @@
-import fetch, { Response, FetchError } from "node-fetch";
-import * as ObjectQueryString from "object-query-string";
-import { Session } from "../models";
+import * as ObjectQueryString from 'object-query-string';
+import fetch, { FetchError, Response } from 'node-fetch';
+import { Session } from '../models';
 interface RequestOption {
   body?: any;
   headers?: any;
   method?: string;
   query?: any;
+  timeout?: number;
 }
 export class HttpClient {
   sessionId?: string;
@@ -35,7 +36,7 @@ export class HttpClient {
           if (res.status > 201) {
             reject({
               status: res.status,
-              data: buff.toString(),
+              error: buff.toString(),
             });
             return;
           }
@@ -46,9 +47,10 @@ export class HttpClient {
           }
         })
         .catch((e: FetchError) => {
-          resolve({
+          reject({
             status: e.code,
-            error: e.message,
+            message: e.message,
+            stack: e.stack,
           });
         });
     });

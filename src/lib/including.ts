@@ -3,7 +3,7 @@ import MyObject from "./my-object";
 import Random from "./random";
 import { HttpClient } from "./http-client";
 import { Identity } from "../models/Identity";
-import { Include } from "../models/Include";
+import { Include, IncludeInterface } from "../models/Include";
 import { Session } from "../models/Session";
 import {
   createIdentities,
@@ -47,7 +47,7 @@ function childrening(
         } else if (inc.foreign) {
           where[inc.foreign] = identity.value;
         }
-        const promiseInclude = requestForInclude({
+        const promiseInclude = requestForChildren({
           sessionId,
           identity: identity,
           identities: identities,
@@ -60,7 +60,7 @@ function childrening(
       }
     } else {
       let identitiesValues = mapIdentities(identities);
-      if  (!inc.duplicate) {
+      if (!inc.duplicate) {
         identitiesValues = MyObject.filterDuplicate(identitiesValues);
       }
       const where: any = {};
@@ -71,7 +71,7 @@ function childrening(
       } else {
         where.identities = identitiesValues;
       }
-      const promiseInclude = requestForInclude({
+      const promiseInclude = requestForChildren({
         sessionId,
         identities: identities,
         inc,
@@ -96,7 +96,7 @@ function childrening(
   });
 }
 
-function requestForInclude({
+function requestForChildren({
   sessionId,
   identity,
   identities,
@@ -124,6 +124,10 @@ function requestForInclude({
     });
     let query: any;
     let body: any;
+    let headers: any = {
+      ...Session.getHeaders(sessionId),
+      ...inc.headers,
+    };
     query = createQuery({
       query: inc.query,
       sessionId,
@@ -146,17 +150,36 @@ function requestForInclude({
     }
     const requestOption = {
       methid: inc.method,
-      query: query,
-      body: body,
-      headers: {
-        ...Session.getHeaders(sessionId),
-        ...inc.headers,
-      },
+      headers: inc._headers || headers,
+      query: inc._query || query,
+      body: inc._body || body,
+      timeout: inc.timeout,
     };
     let url = replaceUrl(inc.url, Session.getReplaces(sessionId));
     await httpClient
       .request(url, requestOption)
       .then(async (data: any) => {
+        if (inc.onSuccess) {
+          try {
+            inc.onSuccess(
+              null,
+              {
+                url: url,
+                ...requestOption,
+              },
+              data
+            );
+          } catch (error) {}
+        }
+        if (inc.frame?.length) {
+          data = {
+            [inc.frame]: data,
+          };
+        } else if (inc.isShouldHaveFrame(data)) {
+          data = {
+            data: data,
+          };
+        }
         const key = inc.select;
         if (inc.whole || key === "_") {
         } else if (key?.includes(".")) {
@@ -241,6 +264,15 @@ async function onSuccess({
   const keys = Object.keys(flatData);
   if (inc.branches!!) {
     for (let eachBranches of inc.branches) {
+      if (eachBranches.buildQuery) {
+        eachBranches._query = eachBranches.buildQuery(data);
+      }
+      if (eachBranches.buildBody) {
+        eachBranches._body = eachBranches.buildBody(data);
+      }
+      if (eachBranches.buildHeaders) {
+        eachBranches._headers = eachBranches.buildHeaders(data);
+      }
       const promise = childrening(eachBranches, {
         sessionId,
         flatData,
@@ -253,6 +285,15 @@ async function onSuccess({
   }
   if (inc.includes!!) {
     for (let eachInc of inc.includes) {
+      if (eachInc.buildQuery) {
+        eachInc._query = eachInc.buildQuery(data);
+      }
+      if (eachInc.buildBody) {
+        eachInc._body = eachInc.buildBody(data);
+      }
+      if (eachInc.buildHeaders) {
+        eachInc._headers = eachInc.buildHeaders(data);
+      }
       const promise = childrening(eachInc, {
         sessionId,
         flatData,
@@ -293,20 +334,43 @@ function request(
   return new Promise((resolve, reject) => {
     let url = replaceUrl(inc.url, Session.getReplaces(sessionId));
     const httpClient = new HttpClient({ sessionId: sessionId });
+    const params = {
+      query: inc.query,
+      method: inc.method,
+      headers: {
+        ...Session.getHeaders(sessionId),
+        ...inc.headers,
+      },
+      body: inc.body,
+      timeout: inc.timeout,
+    };
     httpClient
-      .request(url, {
-        query: inc.query,
-        method: inc.method,
-        headers: {
-          ...Session.getHeaders(sessionId),
-          ...inc.headers,
-        },
-        body: inc.body,
-      })
+      .request(url, params)
       .then(async (data: any) => {
+        if (inc.onSuccess) {
+          try {
+            inc.onSuccess(
+              null,
+              {
+                url: url,
+                ...params,
+              },
+              data
+            );
+          } catch (error) {}
+        }
         if (typeof data !== "object") {
           resolve(data);
           return;
+        }
+        if (inc.frame?.length) {
+          data = {
+            [inc.frame]: data,
+          };
+        } else if (inc.isShouldHaveFrame(data)) {
+          data = {
+            data: data,
+          };
         }
         if (inc.select) {
           const selectR = inc.select.split(".");
@@ -342,6 +406,7 @@ function request(
       })
       .catch((e) => {
         resolve({
+          isError: true,
           error: e,
         });
       });
@@ -383,11 +448,11 @@ function selectsAndExcludes(data: any, inc: Include) {
 export interface IIncludingParam {
   replaces?: any;
   headers?: any;
-  list: Include[];
+  list: IncludeInterface[];
 }
 export function including(param: IIncludingParam) {
   return new Promise((resolveMain, rejectMain) => {
-    const list = param.list;
+    const list: Include[] = param.list?.map((item) => Include.fromJSON(item));
     const id = moment().unix() + "_" + Random.stringWithNumber(5);
     Session.initSession(id, {
       headers: param.headers,
@@ -400,10 +465,24 @@ export function including(param: IIncludingParam) {
         sessionId: id,
       });
       promise
-        .then((data) => {
+        .then((data: any) => {
           results[item.model] = data;
+          if (item.onDone) {
+            try {
+              if (data.isError) {
+                item.onDone(data.error, null);
+              } else {
+                item.onDone(null, data);
+              }
+            } catch (error) {}
+          }
         })
         .catch((err) => {
+          if (item.onDone) {
+            try {
+              item.onDone(err, null);
+            } catch (error) {}
+          }
           results[item.model] = {
             errror: err,
           };

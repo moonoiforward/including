@@ -12,29 +12,18 @@ function dev() {
         },
         list: [
             {
-                url: "JSON_PLACE_HOLDER/albums",
+                url: "https://jsonplaceholder.typicode.com/posts",
                 method: "GET",
-                model: "albums",
-                excludes: ["id"],
-                includes: [
+                model: "posts",
+                frame: "list",
+                branches: [
                     {
-                        url: "http://104.248.158.156:8110/departments",
+                        url: "https://jsonplaceholder.typicode.com/users",
                         method: "GET",
-                        model: "includeDepartment",
-                        select: "data",
-                        on: "id",
-                        delimiter: ",",
-                        foreign: "filter[DepartmentID]",
-                        local: "DepartmentID",
-                    },
-                    {
-                        url: "http://104.248.158.156:8110/regionalProvinces",
-                        method: "GET",
-                        model: "includeRegionalProvince",
-                        select: "data",
-                        on: "userId",
-                        foreign: "filter[in][RegionalProvinceID]",
-                        local: "RegionalProvinceID",
+                        model: "brancheUsers",
+                        on: "list.userId",
+                        foreign: "id",
+                        // local: "id",
                     },
                 ],
             },

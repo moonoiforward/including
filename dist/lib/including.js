@@ -17,6 +17,7 @@ const moment_1 = __importDefault(require("moment"));
 const my_object_1 = __importDefault(require("./my-object"));
 const random_1 = __importDefault(require("./random"));
 const http_client_1 = require("./http-client");
+const Include_1 = require("../models/Include");
 const Session_1 = require("../models/Session");
 const mapping_1 = require("./mapping");
 const regex_1 = require("./regex");
@@ -122,7 +123,17 @@ function requestForInclude({ sessionId, identity, identities, inc, where, dimens
         yield httpClient
             .request(url, requestOption)
             .then((data) => __awaiter(this, void 0, void 0, function* () {
-            var _a, _b;
+            var _a, _b, _c;
+            if ((_a = inc.frame) === null || _a === void 0 ? void 0 : _a.length) {
+                data = {
+                    [inc.frame]: data,
+                };
+            }
+            else if (inc.isShouldHaveFrame(data)) {
+                data = {
+                    data: data,
+                };
+            }
             const key = inc.select;
             if (inc.whole || key === "_") {
             }
@@ -139,7 +150,7 @@ function requestForInclude({ sessionId, identity, identities, inc, where, dimens
                     data = data[key] || null;
                 }
             }
-            if (((_a = inc.includes) === null || _a === void 0 ? void 0 : _a.length) || ((_b = inc.branches) === null || _b === void 0 ? void 0 : _b.length)) {
+            if (((_b = inc.includes) === null || _b === void 0 ? void 0 : _b.length) || ((_c = inc.branches) === null || _c === void 0 ? void 0 : _c.length)) {
                 data = yield onSuccess({
                     inc,
                     sessionId,
@@ -255,9 +266,20 @@ function request(inc, { sessionId, }) {
             body: inc.body,
         })
             .then((data) => __awaiter(this, void 0, void 0, function* () {
+            var _a;
             if (typeof data !== "object") {
                 resolve(data);
                 return;
+            }
+            if ((_a = inc.frame) === null || _a === void 0 ? void 0 : _a.length) {
+                data = {
+                    [inc.frame]: data,
+                };
+            }
+            else if (inc.isShouldHaveFrame(data)) {
+                data = {
+                    data: data,
+                };
             }
             if (inc.select) {
                 const selectR = inc.select.split(".");
@@ -334,7 +356,8 @@ function selectsAndExcludes(data, inc) {
 }
 function including(param) {
     return new Promise((resolveMain, rejectMain) => {
-        const list = param.list;
+        var _a;
+        const list = (_a = param.list) === null || _a === void 0 ? void 0 : _a.map((item) => Include_1.Include.fromJSON(item));
         const id = (0, moment_1.default)().unix() + "_" + random_1.default.stringWithNumber(5);
         Session_1.Session.initSession(id, {
             headers: param.headers,

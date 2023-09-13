@@ -16,6 +16,7 @@ class Include {
         this.delimiter = data["delimiter"];
         this.foreign = data["foreign"];
         this.local = data["local"];
+        this.frame = data["frame"];
         this.select = data["select"];
         this.selects = data["selects"];
         this.excludes = data["excludes"];
@@ -46,6 +47,13 @@ class Include {
     }
     static fromJSON(data) {
         return new Include(data);
+    }
+    isShouldHaveFrame(data) {
+        var _a;
+        const bool = Array.isArray(data) &&
+            ((_a = this.frame) === null || _a === void 0 ? void 0 : _a.length) === 0 &&
+            this.branches.length > 0;
+        return bool;
     }
 }
 exports.Include = Include;

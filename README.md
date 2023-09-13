@@ -1,11 +1,12 @@
 # Including.js
-<p align="center">Low code HTTP client can be combine and including data from multiple endpoint for the node.js don't use in browser, please don't use.</p>
-<p align="center">You don't need for loop any more for combine data</p>
+Low code HTTP client can be combine and including data from multiple endpoint for the node.js don't use in browser, please don't use.
+You don't need for loop any more for combine data
 
 ## Features
 
 - http multiple endpoint in multi task process
-- in each endpoint process can be including other http for joining data and not limit dimension
+- in each endpoint process can be including other http for joining data and not limit dimension (includes)
+- create main data list from belong data such as contents list from favorite list (branches)
 
 ## Example From https://jsonplaceholder.typicode.com
 
