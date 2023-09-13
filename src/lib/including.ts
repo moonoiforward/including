@@ -1,6 +1,4 @@
-import moment from "moment";
 import MyObject from "./my-object";
-import Random from "./random";
 import { HttpClient } from "./http-client";
 import { Identity } from "../models/Identity";
 import { Include, IncludeInterface } from "../models/Include";
@@ -15,6 +13,7 @@ import {
   replaceUrl,
 } from "./mapping";
 import { isNotNumber } from "./regex";
+import MyString from "./my-string";
 function childrening(
   inc: Include,
   {
@@ -453,7 +452,7 @@ export interface IIncludingParam {
 export function including(param: IIncludingParam) {
   return new Promise((resolveMain, rejectMain) => {
     const list: Include[] = param.list?.map((item) => Include.fromJSON(item));
-    const id = moment().unix() + "_" + Random.stringWithNumber(5);
+    const id = MyString.generateId();
     Session.initSession(id, {
       headers: param.headers,
       replaces: param.replaces,

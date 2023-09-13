@@ -19,7 +19,6 @@
   },
   "dependencies": {
     "flat": "^5.0.2",
-    "moment": "^2.29.4",
     "node-fetch": "^2.7.0",
     "object-query-string": "^1.2.0"
   }
