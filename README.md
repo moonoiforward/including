@@ -217,3 +217,6 @@ including(
   console.log(JSON.stringify(data));
 })
 ```
+
+### Life Cycle
+![Local Image](./assets/including-life-cycle.jpg)
