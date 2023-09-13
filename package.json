@@ -1,0 +1,26 @@
+{
+  "name": "including",
+  "version": "0.0.5",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "nodemon": "nodemon",
+    "dev": "ts-node-dev --respawn --transpile-only ./src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/flat": "^5.0.2",
+    "@types/node-fetch": "^2.6.4",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "flat": "^5.0.2",
+    "moment": "^2.29.4",
+    "node-fetch": "^2.7.0",
+    "object-query-string": "^1.2.0"
+  }
+}

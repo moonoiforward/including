@@ -1,0 +1,13 @@
+{
+  "verbose": true,
+  "ignore": [
+    "*.test.js",
+    "*.json"
+  ],
+  "watch": "src",
+  "delay": "500",
+  "ext": "ts",
+  "exec": "ts-node-dev --respawn --transpile-only -P tsconfig.json src/index.ts",
+  "_exec": "ts-node src/index",
+  "events": {}
+}
