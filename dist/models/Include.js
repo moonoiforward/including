@@ -22,13 +22,19 @@ class Include {
         this.selects = data["selects"];
         this.excludes = data["excludes"];
         this.whole = data["whole"] || false;
-        this.pagination = data["pagination"] || false;
         this.duplicate = data["duplicate"] ? data["duplicate"] : true;
         this.buildHeaders = data["buildHeaders"];
         this.buildQuery = data["buildQuery"];
         this.buildBody = data["buildBody"];
         this.onSuccess = data["onSuccess"];
         this.onDone = data["onDone"];
+        if (typeof data["duplicate"] !== "undefined" &&
+            data["duplicate"] !== null) {
+            this.duplicate = data["duplicate"];
+        }
+        else {
+            this.duplicate = true;
+        }
         if (typeof data["each"] !== "undefined" && data["each"] !== null) {
             this.each = data["each"];
         }

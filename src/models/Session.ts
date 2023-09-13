@@ -37,10 +37,14 @@ export class Session {
   static writeLog(id: string) {
     return fs.writeFile(
       "./logs/" + id + ".json",
-      JSON.stringify({
-        sessions: Session.getSessions(id),
-        logs: Session.getLogs(id),
-      })
+      JSON.stringify(
+        {
+          sessions: Session.getSessions(id),
+          logs: Session.getLogs(id),
+        },
+        null,
+        4
+      )
     );
   }
   static clearSession(id: string) {

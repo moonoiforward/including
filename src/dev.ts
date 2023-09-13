@@ -10,38 +10,38 @@ export function dev() {
     },
     list: [
       {
-        url: "https://jsonplaceholder.typicode.com/posts",
+        url: "https://jsonplaceholder.typicode.com/users",
         method: "GET",
-        model: "posts",
-        frame: "list",
-        timeout: 1000,
-        onSuccess: (err, client, result) => {
-          // console.log(err, client, result);
+        model: "users",
+        query: {
+          id: [1, 2, 3, 4, 5], // sample only 5 users by id[]=1&id[]=2...
         },
-        onDone: (err, data) => {
-          // console.log(err, data);
-        },
-        branches: [
+        sessions: {},
+        includes: [
           {
-            url: "https://jsonplaceholder.typicode.com/users",
+            url: "https://jsonplaceholder.typicode.com/posts",
             method: "GET",
-            model: "brancheUsers",
-            on: "list.userId",
-            foreign: "id",
-            local: "id",
-            buildQuery: (data) => {
-              return null;
-            },
+            model: "includePosts",
+            on: "id",
+            duplicate: false,
+            foreign: "userId",
+            each: true, // including will HTTP to url each items in parent (5 times from example)
+            includes: [
+              {
+                url: "https://jsonplaceholder.typicode.com/users",
+                method: "GET",
+                model: "includeUser",
+                duplicate: false,
+                on: "userId",
+                foreign: "id",
+                local: "id",
+              },
+            ],
           },
         ],
       },
     ],
   })
-    .then((data) => {
-      console.log(data)
-      console.log(JSON.stringify(data));
-    })
-    .catch((e) => {
-      console.log(e);
-    });
+    .then((data) => {})
+    .catch((e) => {});
 }
