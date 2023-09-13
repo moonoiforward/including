@@ -18,7 +18,7 @@ class Include {
         this.foreign = data["foreign"];
         this.local = data["local"];
         this.frame = data["frame"];
-        this.select = data["select"];
+        this.at = data["at"] || data["select"];
         this.selects = data["selects"];
         this.excludes = data["excludes"];
         this.whole = data["whole"] || false;

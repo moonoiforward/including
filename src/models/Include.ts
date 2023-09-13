@@ -46,11 +46,11 @@ export interface IncludeInterface {
   sessions?: any;
 
   /**
-   * Property of data for processing in the next step.
+   * Property of data location in HTTP result for processing in the next step.
    * not like selects: string[]
-   * the select will work before process including
+   * the at will work before process including
    */
-  select?: string;
+  at?: string;
 
   /**
    * Properties to select after finishing the processing (do not use together with excludes).\
@@ -172,7 +172,7 @@ export class Include implements IncludeInterface {
   foreign?: string;
   local?: string;
   frame?: string;
-  select?: string;
+  at?: string;
   whole?: boolean;
   each?: boolean;
   includes?: Include[];
@@ -203,7 +203,7 @@ export class Include implements IncludeInterface {
     this.foreign = data["foreign"];
     this.local = data["local"];
     this.frame = data["frame"];
-    this.select = data["select"];
+    this.at = data["at"] || data["select"];
     this.selects = data["selects"];
     this.excludes = data["excludes"];
     this.whole = data["whole"] || false;

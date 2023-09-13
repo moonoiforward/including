@@ -2,7 +2,7 @@ export declare class Action {
     url: string;
     model: string;
     query: any;
-    select: string;
+    at: string;
     method: string;
     body: any;
     headers: any;

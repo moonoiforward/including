@@ -5,7 +5,7 @@ including({
       url: 'https://raw.githubusercontent.com/moonoiforward/including/main/json/posts.1.json',
       method: 'GET',
       model: 'posts',
-      select: 'data', // where is result (object or array) for mapping
+      at: 'data', // where is result (object or array) for mapping
       includes: [
         {
           url: 'https://raw.githubusercontent.com/moonoiforward/including/main/json/usersWithFrame.json',
@@ -14,7 +14,7 @@ including({
           on: 'userId',
           foreign: 'id',
           local: 'id',
-          select: 'data' // where is result (object or array) for mapping
+          at: 'data' // where is result (object or array) for mapping
         }
       ]
     }

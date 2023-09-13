@@ -179,19 +179,16 @@ function requestForChildren({
             data: data,
           };
         }
-        const key = inc.select;
-        if (inc.whole || key === "_") {
-        } else if (key?.includes(".")) {
-          const keyR = key.split(".");
+        if (inc.whole || inc.at === "_") {
+        } else if (inc.at?.includes(".")) {
+          const keyR = inc.at.split(".");
           for (let keyInR of keyR) {
             if (keyInR !== "") {
               data = data[keyInR] || null;
             }
           }
-        } else {
-          if (key) {
-            data = data[key] || null;
-          }
+        } else if (inc.at) {
+          data = data[inc.at] || null;
         }
         if (inc.includes?.length || inc.branches?.length) {
           data = await onSuccess({
@@ -373,8 +370,8 @@ function request(
             data: data,
           };
         }
-        if (inc.select) {
-          const selectR = inc.select.split(".");
+        if (inc.at) {
+          const selectR = inc.at.split(".");
           for (let item of selectR) {
             data = data[item];
           }

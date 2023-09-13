@@ -124,7 +124,7 @@ function requestForChildren({ sessionId, identity, identities, inc, where, dimen
         yield httpClient
             .request(url, requestOption)
             .then((data) => __awaiter(this, void 0, void 0, function* () {
-            var _a, _b, _c;
+            var _a, _b, _c, _d;
             if (inc.onSuccess) {
                 try {
                     inc.onSuccess(null, Object.assign({ url: url }, requestOption), data);
@@ -141,23 +141,20 @@ function requestForChildren({ sessionId, identity, identities, inc, where, dimen
                     data: data,
                 };
             }
-            const key = inc.select;
-            if (inc.whole || key === "_") {
+            if (inc.whole || inc.at === "_") {
             }
-            else if (key === null || key === void 0 ? void 0 : key.includes(".")) {
-                const keyR = key.split(".");
+            else if ((_b = inc.at) === null || _b === void 0 ? void 0 : _b.includes(".")) {
+                const keyR = inc.at.split(".");
                 for (let keyInR of keyR) {
                     if (keyInR !== "") {
                         data = data[keyInR] || null;
                     }
                 }
             }
-            else {
-                if (key) {
-                    data = data[key] || null;
-                }
+            else if (inc.at) {
+                data = data[inc.at] || null;
             }
-            if (((_b = inc.includes) === null || _b === void 0 ? void 0 : _b.length) || ((_c = inc.branches) === null || _c === void 0 ? void 0 : _c.length)) {
+            if (((_c = inc.includes) === null || _c === void 0 ? void 0 : _c.length) || ((_d = inc.branches) === null || _d === void 0 ? void 0 : _d.length)) {
                 data = yield onSuccess({
                     inc,
                     sessionId,
@@ -317,8 +314,8 @@ function request(inc, { sessionId, }) {
                     data: data,
                 };
             }
-            if (inc.select) {
-                const selectR = inc.select.split(".");
+            if (inc.at) {
+                const selectR = inc.at.split(".");
                 for (let item of selectR) {
                     data = data[item];
                 }

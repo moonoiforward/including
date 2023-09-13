@@ -5,7 +5,7 @@ including({
       url: 'https://raw.githubusercontent.com/moonoiforward/including/main/json/posts.1.json',
       method: 'GET',
       model: 'posts',
-      select: 'data',
+      at: 'data',
       includes: [
         {
           url: 'https://raw.githubusercontent.com/moonoiforward/including/main/json/users.json',

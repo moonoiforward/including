@@ -2,7 +2,7 @@ export class Action {
   url: string;
   model: string;
   query: any;
-  select: string;
+  at: string;
   method: string;
   body: any;
   headers: any;
@@ -13,7 +13,7 @@ export class Action {
     this.url = data["url"];
     this.model = data["model"];
     this.query = data["query"];
-    this.select = data["select"];
+    this.at = data["at"];
     this.method = data["method"];
     this.body = data["body"];
     this.sessions = data["sessions"];
