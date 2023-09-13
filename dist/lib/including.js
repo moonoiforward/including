@@ -13,14 +13,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.including = void 0;
-const moment_1 = __importDefault(require("moment"));
 const my_object_1 = __importDefault(require("./my-object"));
-const random_1 = __importDefault(require("./random"));
 const http_client_1 = require("./http-client");
 const Include_1 = require("../models/Include");
 const Session_1 = require("../models/Session");
 const mapping_1 = require("./mapping");
 const regex_1 = require("./regex");
+const my_string_1 = __importDefault(require("./my-string"));
 function childrening(inc, { sessionId, flatData, keys, dimension, isBranch, }) {
     return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
         let result = {};
@@ -39,7 +38,7 @@ function childrening(inc, { sessionId, flatData, keys, dimension, isBranch, }) {
                 else if (inc.foreign) {
                     where[inc.foreign] = identity.value;
                 }
-                const promiseInclude = requestForInclude({
+                const promiseInclude = requestForChildren({
                     sessionId,
                     identity: identity,
                     identities: identities,
@@ -66,7 +65,7 @@ function childrening(inc, { sessionId, flatData, keys, dimension, isBranch, }) {
             else {
                 where.identities = identitiesValues;
             }
-            const promiseInclude = requestForInclude({
+            const promiseInclude = requestForChildren({
                 sessionId,
                 identities: identities,
                 inc,
@@ -86,7 +85,7 @@ function childrening(inc, { sessionId, flatData, keys, dimension, isBranch, }) {
         resolve(result);
     }));
 }
-function requestForInclude({ sessionId, identity, identities, inc, where, dimension, isBranch, }) {
+function requestForChildren({ sessionId, identity, identities, inc, where, dimension, isBranch, }) {
     return new Promise((resolve) => __awaiter(this, void 0, void 0, function* () {
         let flatData = {};
         const httpClient = new http_client_1.HttpClient({ sessionId: sessionId });
@@ -98,6 +97,7 @@ function requestForInclude({ sessionId, identity, identities, inc, where, dimens
         });
         let query;
         let body;
+        let headers = Object.assign(Object.assign({}, Session_1.Session.getHeaders(sessionId)), inc.headers);
         query = (0, mapping_1.createQuery)({
             query: inc.query,
             sessionId,
@@ -115,15 +115,22 @@ function requestForInclude({ sessionId, identity, identities, inc, where, dimens
         }
         const requestOption = {
             methid: inc.method,
-            query: query,
-            body: body,
-            headers: Object.assign(Object.assign({}, Session_1.Session.getHeaders(sessionId)), inc.headers),
+            headers: inc._headers || headers,
+            query: inc._query || query,
+            body: inc._body || body,
+            timeout: inc.timeout,
         };
         let url = (0, mapping_1.replaceUrl)(inc.url, Session_1.Session.getReplaces(sessionId));
         yield httpClient
             .request(url, requestOption)
             .then((data) => __awaiter(this, void 0, void 0, function* () {
             var _a, _b, _c;
+            if (inc.onSuccess) {
+                try {
+                    inc.onSuccess(null, Object.assign({ url: url }, requestOption), data);
+                }
+                catch (error) { }
+            }
             if ((_a = inc.frame) === null || _a === void 0 ? void 0 : _a.length) {
                 data = {
                     [inc.frame]: data,
@@ -216,6 +223,15 @@ function onSuccess({ sessionId, inc, data, dimension, }) {
         const keys = Object.keys(flatData);
         if (inc.branches) {
             for (let eachBranches of inc.branches) {
+                if (eachBranches.buildQuery) {
+                    eachBranches._query = eachBranches.buildQuery(data);
+                }
+                if (eachBranches.buildBody) {
+                    eachBranches._body = eachBranches.buildBody(data);
+                }
+                if (eachBranches.buildHeaders) {
+                    eachBranches._headers = eachBranches.buildHeaders(data);
+                }
                 const promise = childrening(eachBranches, {
                     sessionId,
                     flatData,
@@ -228,6 +244,15 @@ function onSuccess({ sessionId, inc, data, dimension, }) {
         }
         if (inc.includes) {
             for (let eachInc of inc.includes) {
+                if (eachInc.buildQuery) {
+                    eachInc._query = eachInc.buildQuery(data);
+                }
+                if (eachInc.buildBody) {
+                    eachInc._body = eachInc.buildBody(data);
+                }
+                if (eachInc.buildHeaders) {
+                    eachInc._headers = eachInc.buildHeaders(data);
+                }
                 const promise = childrening(eachInc, {
                     sessionId,
                     flatData,
@@ -258,15 +283,23 @@ function request(inc, { sessionId, }) {
     return new Promise((resolve, reject) => {
         let url = (0, mapping_1.replaceUrl)(inc.url, Session_1.Session.getReplaces(sessionId));
         const httpClient = new http_client_1.HttpClient({ sessionId: sessionId });
-        httpClient
-            .request(url, {
+        const params = {
             query: inc.query,
             method: inc.method,
             headers: Object.assign(Object.assign({}, Session_1.Session.getHeaders(sessionId)), inc.headers),
             body: inc.body,
-        })
+            timeout: inc.timeout,
+        };
+        httpClient
+            .request(url, params)
             .then((data) => __awaiter(this, void 0, void 0, function* () {
             var _a;
+            if (inc.onSuccess) {
+                try {
+                    inc.onSuccess(null, Object.assign({ url: url }, params), data);
+                }
+                catch (error) { }
+            }
             if (typeof data !== "object") {
                 resolve(data);
                 return;
@@ -316,6 +349,7 @@ function request(inc, { sessionId, }) {
         }))
             .catch((e) => {
             resolve({
+                isError: true,
                 error: e,
             });
         });
@@ -358,7 +392,7 @@ function including(param) {
     return new Promise((resolveMain, rejectMain) => {
         var _a;
         const list = (_a = param.list) === null || _a === void 0 ? void 0 : _a.map((item) => Include_1.Include.fromJSON(item));
-        const id = (0, moment_1.default)().unix() + "_" + random_1.default.stringWithNumber(5);
+        const id = my_string_1.default.generateId();
         Session_1.Session.initSession(id, {
             headers: param.headers,
             replaces: param.replaces,
@@ -372,8 +406,25 @@ function including(param) {
             promise
                 .then((data) => {
                 results[item.model] = data;
+                if (item.onDone) {
+                    try {
+                        if (data.isError) {
+                            item.onDone(data.error, null);
+                        }
+                        else {
+                            item.onDone(null, data);
+                        }
+                    }
+                    catch (error) { }
+                }
             })
                 .catch((err) => {
+                if (item.onDone) {
+                    try {
+                        item.onDone(err, null);
+                    }
+                    catch (error) { }
+                }
                 results[item.model] = {
                     errror: err,
                 };

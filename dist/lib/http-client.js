@@ -36,8 +36,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HttpClient = void 0;
-const node_fetch_1 = __importDefault(require("node-fetch"));
 const ObjectQueryString = __importStar(require("object-query-string"));
+const node_fetch_1 = __importDefault(require("node-fetch"));
 const models_1 = require("../models");
 class HttpClient {
     constructor(params) {
@@ -63,7 +63,7 @@ class HttpClient {
                 if (res.status > 201) {
                     reject({
                         status: res.status,
-                        data: buff.toString(),
+                        error: buff.toString(),
                     });
                     return;
                 }
@@ -75,9 +75,10 @@ class HttpClient {
                 }
             }))
                 .catch((e) => {
-                resolve({
+                reject({
                     status: e.code,
-                    error: e.message,
+                    message: e.message,
+                    stack: e.stack,
                 });
             });
         });

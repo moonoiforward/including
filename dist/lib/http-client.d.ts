@@ -3,6 +3,7 @@ interface RequestOption {
     headers?: any;
     method?: string;
     query?: any;
+    timeout?: number;
 }
 export declare class HttpClient {
     sessionId?: string;

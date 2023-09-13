@@ -3,10 +3,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Include = void 0;
 class Include {
     constructor(data) {
-        this.default = data["default"] || null;
         this.url = data["url"];
         this.method = data["method"];
         this.model = data["model"];
+        this.timeout = data["timeout"];
+        this.default = data["default"] || null;
         this.query = data["query"];
         this.headers = data["headers"] || {};
         this.body = data["body"];
@@ -23,6 +24,11 @@ class Include {
         this.whole = data["whole"] || false;
         this.pagination = data["pagination"] || false;
         this.duplicate = data["duplicate"] ? data["duplicate"] : true;
+        this.buildHeaders = data["buildHeaders"];
+        this.buildQuery = data["buildQuery"];
+        this.buildBody = data["buildBody"];
+        this.onSuccess = data["onSuccess"];
+        this.onDone = data["onDone"];
         if (typeof data["each"] !== "undefined" && data["each"] !== null) {
             this.each = data["each"];
         }
@@ -57,40 +63,3 @@ class Include {
     }
 }
 exports.Include = Include;
-// export class Load {
-//   url: string;
-//   model: string;
-//   query: any;
-//   select: string;
-//   headers: any;
-//   body: any;
-//   sessions: any;
-//   branches: Include[];
-//   includes: Include[];
-//   constructor(data: any) {
-//     this.url = data["url"];
-//     this.model = data["model"];
-//     this.query = data["query"];
-//     this.select = data["select"];
-//     this.sessions = data["sessions"];
-//     this.headers = data["headers"];
-//     this.body = data["body"];
-//     if (data["includes"]) {
-//       this.includes = data["includes"].map((item: any) =>
-//         Include.fromJSON(item)
-//       );
-//     } else {
-//       this.includes = [];
-//     }
-//     if (data["branches"]) {
-//       this.branches = data["branches"].map((item: any) =>
-//         Include.fromJSON(item)
-//       );
-//     } else {
-//       this.branches = [];
-//     }
-//   }
-//   static fromJSON(data: any) {
-//     return new Load(data);
-//   }
-// }

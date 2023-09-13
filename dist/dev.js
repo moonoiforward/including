@@ -16,6 +16,13 @@ function dev() {
                 method: "GET",
                 model: "posts",
                 frame: "list",
+                timeout: 1000,
+                onSuccess: (err, client, result) => {
+                    // console.log(err, client, result);
+                },
+                onDone: (err, data) => {
+                    // console.log(err, data);
+                },
                 branches: [
                     {
                         url: "https://jsonplaceholder.typicode.com/users",
@@ -23,13 +30,17 @@ function dev() {
                         model: "brancheUsers",
                         on: "list.userId",
                         foreign: "id",
-                        // local: "id",
+                        local: "id",
+                        buildQuery: (data) => {
+                            return null;
+                        },
                     },
                 ],
             },
         ],
     })
         .then((data) => {
+        console.log(data);
         console.log(JSON.stringify(data));
     })
         .catch((e) => {

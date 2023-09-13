@@ -2,7 +2,8 @@ export interface IncludeInterface {
     url: string;
     model: string;
     method: string;
-    default?: any;
+    timeout?: number;
+    default?: string;
     query?: any;
     headers?: any;
     body?: any;
@@ -22,14 +23,20 @@ export interface IncludeInterface {
     pagination?: boolean;
     includes?: IncludeInterface[];
     branches?: IncludeInterface[];
+    buildQuery?: (data: any) => any;
+    buildBody?: (data: any) => any;
+    buildHeaders?: (data: any) => any;
+    onSuccess?: (err: any, client: any, data: any) => void;
+    onDone?: (err: any, data: any) => void;
 }
 export declare class Include implements IncludeInterface {
     url: string;
     model: string;
     method: string;
-    default?: any;
-    query?: any;
+    timeout?: number;
+    default?: string;
     headers?: any;
+    query?: any;
     body?: any;
     params?: string[];
     sessions?: any;
@@ -47,6 +54,14 @@ export declare class Include implements IncludeInterface {
     pagination?: boolean;
     includes?: Include[];
     branches?: Include[];
+    _headers?: any;
+    _query?: any;
+    _body?: any;
+    buildQuery?: (data: any) => any;
+    buildBody?: (data: any) => any;
+    buildHeaders?: (data: any) => any;
+    onSuccess?: (err: any, client: any, data: any) => void;
+    onDone?: (err: any, data: any) => void;
     constructor(data: any);
     static fromJSON(data: any): Include;
     isShouldHaveFrame(data: any): boolean;
