@@ -374,7 +374,7 @@ function selectsAndExcludes(data, inc) {
             if (select === keySplit.join(".")) {
                 isMatch = true;
             }
-            else if (keySplit.join(".").indexOf(select) === 0) {
+            else if (keySplit.join(".").indexOf(select + ".") === 0) {
                 isMatch = true;
             }
         }

@@ -34,7 +34,7 @@ function dev() {
                                 url: "https://jsonplaceholder.typicode.com/users",
                                 method: "GET",
                                 model: "includeUser",
-                                selects: ["id", "name"],
+                                selects: ["id", "name", "address.street", "address.zipcode"],
                                 duplicate: false,
                                 on: "userId",
                                 foreign: "id",

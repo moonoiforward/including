@@ -428,7 +428,7 @@ function selectsAndExcludes(data: any, inc: Include) {
     for (let select of selects!!) {
       if (select === keySplit.join(".")) {
         isMatch = true;
-      } else if (keySplit.join(".").indexOf(select) === 0) {
+      } else if (keySplit.join(".").indexOf(select + ".") === 0) {
         isMatch = true;
       }
     }
