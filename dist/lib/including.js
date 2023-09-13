@@ -144,12 +144,7 @@ function requestForChildren({ sessionId, identity, identities, inc, where, dimen
             if (inc.whole || inc.at === "_") {
             }
             else if ((_b = inc.at) === null || _b === void 0 ? void 0 : _b.includes(".")) {
-                const keyR = inc.at.split(".");
-                for (let keyInR of keyR) {
-                    if (keyInR !== "") {
-                        data = data[keyInR] || null;
-                    }
-                }
+                data = my_object_1.default.get(inc.at, data);
             }
             else if (inc.at) {
                 data = data[inc.at] || null;
@@ -315,10 +310,7 @@ function request(inc, { sessionId, }) {
                 };
             }
             if (inc.at) {
-                const selectR = inc.at.split(".");
-                for (let item of selectR) {
-                    data = data[item];
-                }
+                data = my_object_1.default.get(inc.at, data);
             }
             if (inc.sessions) {
                 try {

@@ -9,6 +9,15 @@ export default class MyObject {
   static unflatten(data: any) {
     return flat.unflatten(data);
   }
+  static get(key: string, data: any) {
+    const keyR = key.split(".");
+    for (let keyInR of keyR) {
+      if (keyInR !== "") {
+        data = data[keyInR] || null;
+      }
+    }
+    return data;
+  }
   static flatten(data: any) {
     let flatData: any = flat.flatten(data);
 

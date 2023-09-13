@@ -181,12 +181,7 @@ function requestForChildren({
         }
         if (inc.whole || inc.at === "_") {
         } else if (inc.at?.includes(".")) {
-          const keyR = inc.at.split(".");
-          for (let keyInR of keyR) {
-            if (keyInR !== "") {
-              data = data[keyInR] || null;
-            }
-          }
+          data = MyObject.get(inc.at, data);
         } else if (inc.at) {
           data = data[inc.at] || null;
         }
@@ -371,10 +366,7 @@ function request(
           };
         }
         if (inc.at) {
-          const selectR = inc.at.split(".");
-          for (let item of selectR) {
-            data = data[item];
-          }
+          data = MyObject.get(inc.at, data);
         }
         if (inc.sessions) {
           try {

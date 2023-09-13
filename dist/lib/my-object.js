@@ -34,6 +34,15 @@ class MyObject {
     static unflatten(data) {
         return flat.unflatten(data);
     }
+    static get(key, data) {
+        const keyR = key.split(".");
+        for (let keyInR of keyR) {
+            if (keyInR !== "") {
+                data = data[keyInR] || null;
+            }
+        }
+        return data;
+    }
     static flatten(data) {
         let flatData = flat.flatten(data);
         /**
