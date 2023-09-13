@@ -179,7 +179,7 @@ including(
             model: "includeUser",
             on: 'userId', // bring userId from posts to query users
             foreign: 'id', // for query string id[]=1&id[]=2
-            local: 'id' // the identity field from users result
+            local: 'id' // the identity property from users result
           },
         ],
       },
@@ -207,7 +207,7 @@ including(
             delimiter: ',', // add "delimiter" for make query in delimiter format
             on: 'userId', // bring userId from posts to query users
             foreign: 'id', // for query string id[]=1&id[]=2
-            local: 'id' // the identity field from users result
+            local: 'id' // the identity property from users result
           },
         ],
       },

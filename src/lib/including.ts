@@ -201,7 +201,9 @@ function requestForChildren({
             dimension: dimension + 1,
           }).catch((e) => {});
         }
-
+        if (inc.selects || inc.excludes) {
+          data = selectsAndExcludes(data, inc);
+        }
         if (isBranch) {
           flatData[inc.model] = data;
           return;

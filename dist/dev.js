@@ -28,11 +28,13 @@ function dev() {
                         duplicate: false,
                         foreign: "userId",
                         each: true,
+                        selects: ["id", "body", "includeUser"],
                         includes: [
                             {
                                 url: "https://jsonplaceholder.typicode.com/users",
                                 method: "GET",
                                 model: "includeUser",
+                                selects: ["id", "name"],
                                 duplicate: false,
                                 on: "userId",
                                 foreign: "id",
@@ -44,7 +46,9 @@ function dev() {
             },
         ],
     })
-        .then((data) => { })
+        .then((data) => {
+        console.log(JSON.stringify(data));
+    })
         .catch((e) => { });
 }
 exports.dev = dev;

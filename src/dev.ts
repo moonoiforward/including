@@ -26,6 +26,7 @@ export function dev() {
             duplicate: false,
             foreign: "userId",
             each: true, // including will HTTP to url each items in parent (5 times from example)
+            selects: ["id", "body", "includeUser"],
             includes: [
               {
                 url: "https://jsonplaceholder.typicode.com/users",
@@ -42,6 +43,8 @@ export function dev() {
       },
     ],
   })
-    .then((data) => {})
+    .then((data) => {
+      console.log(JSON.stringify(data));
+    })
     .catch((e) => {});
 }
