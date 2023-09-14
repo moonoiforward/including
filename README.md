@@ -48,8 +48,9 @@ combine to be
 ```
 if you use general node.js the code it look like
 ```js
-  const post = (await fetch('https://jsonplaceholder.typicode.com/posts/1')).json();
-  const user = (await fetch('https://jsonplaceholder.typicode.com/posts/' + post.userId)).json();
+  const postId = 1;
+  const post = (await fetch('https://jsonplaceholder.typicode.com/posts/' + postId)).json();
+  const user = (await fetch('https://jsonplaceholder.typicode.com/users/' + post.userId)).json();
   post.includeUser = user
 ```
 
