@@ -28,6 +28,7 @@ function dev() {
                         model: "brancheUsers",
                         on: "data.userId",
                         foreign: "id",
+                        duplicate: false,
                         onSuccess: (err, client, data) => {
                             console.log(client);
                         },
@@ -37,7 +38,7 @@ function dev() {
         ],
     })
         .then((data) => {
-        console.log(JSON.stringify(data, null, 4));
+        // console.log(JSON.stringify(data, null, 4));
     })
         .catch((e) => { });
 }

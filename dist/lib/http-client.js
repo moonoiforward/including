@@ -47,6 +47,7 @@ class HttpClient {
     }
     request(url, params) {
         return new Promise((resolve, reject) => {
+            params = Object.assign({}, params);
             if (params.query) {
                 const stringifyURL = ObjectQueryString.queryString(params.query);
                 if (stringifyURL && stringifyURL != "") {
