@@ -8,6 +8,12 @@ You don't need for loop any more for combine data
 - in each endpoint process can be including other http for joining data and not limit dimension (includes)
 - create main data list from belong data such as contents list from favorite list (branches)
 
+## Installation
+
+```base
+npm i including
+```
+
 ## Example From https://jsonplaceholder.typicode.com
 
 ##### Example one item
