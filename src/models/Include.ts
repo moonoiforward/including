@@ -1,3 +1,36 @@
+import { ObjectJson } from "./ObjectJson";
+
+interface CommonIncludeSentence {
+  requestTo: string;
+  methodIs: string;
+  modelName: string;
+  headerIs?: ObjectJson;
+  queryIs?: ObjectJson;
+  bodyIs?: ObjectJson;
+  selectFields?: string[];
+  excludeFields?: string[];
+  dataAt?: string;
+  hasIncludes?: IncludeInterface[];
+  hasBranches?: IncludeInterface[];
+}
+interface IncludSentenceQueryListParameter extends CommonIncludeSentence {
+  valueFrom: string;
+  sendName: string;
+  delimiterIs?: string;
+  mappingBy: string;
+  isDuplicate?: boolean;
+}
+
+interface IncludSentenceQueryOnParamsParameter extends CommonIncludeSentence {
+  paramsFrom: string[];
+  sendName: string;
+}
+
+interface IncludSentenceQueryEachItemParameter extends CommonIncludeSentence {
+  valueFrom: string;
+  sendName: string;
+}
+
 export interface IncludeInterface {
   /**
    * URL for making an HTTP request.
@@ -254,5 +287,65 @@ export class Include implements IncludeInterface {
       this.frame?.length === 0 &&
       this.branches!!.length > 0;
     return bool;
+  }
+
+  static buildIncludeQueryList(
+    params: IncludSentenceQueryListParameter
+  ): Include {
+    const include = Include.fromJSON({
+      url: params.requestTo,
+      method: params.methodIs,
+      model: params.modelName,
+      header: params.headerIs,
+      query: params.headerIs,
+      body: params.headerIs,
+      at: params.dataAt,
+      on: params.valueFrom, // Main Key
+      foreign: params.sendName, // Main Key
+      local: params.mappingBy, // Main Key
+      duplicate: params.isDuplicate,
+      selects: params.selectFields,
+      excludes: params.excludeFields,
+    } as IncludeInterface);
+    return include;
+  }
+
+  static buildIncludeQueryEachByParams(
+    params: IncludSentenceQueryOnParamsParameter
+  ): Include {
+    const include = Include.fromJSON({
+      url: params.requestTo,
+      method: params.methodIs,
+      model: params.modelName,
+      header: params.headerIs,
+      query: params.headerIs,
+      body: params.headerIs,
+      at: params.dataAt,
+      params: params.paramsFrom, // Main Key
+      foreign: params.sendName,
+      selects: params.selectFields,
+      excludes: params.excludeFields,
+    } as IncludeInterface);
+    return include;
+  }
+
+  static buildIncludeQueryEach(
+    params: IncludSentenceQueryEachItemParameter
+  ): Include {
+    const include = Include.fromJSON({
+      url: params.requestTo,
+      method: params.methodIs,
+      model: params.modelName,
+      header: params.headerIs,
+      query: params.headerIs,
+      body: params.headerIs,
+      at: params.dataAt,
+      on: params.valueFrom, // Main Key
+      foreign: params.sendName, // Main Key
+      each: true, // Main Key
+      selects: params.selectFields,
+      excludes: params.excludeFields,
+    } as IncludeInterface);
+    return include;
   }
 }

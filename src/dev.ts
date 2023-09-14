@@ -1,4 +1,5 @@
 import { including } from "./lib/including";
+import { Include } from "./models";
 
 export function dev() {
   including({
@@ -28,16 +29,31 @@ export function dev() {
             each: true, // including will HTTP to url each items in parent (5 times from example)
             selects: ["id", "body", "includeUser"],
             includes: [
-              {
-                url: "https://jsonplaceholder.typicode.com/users",
-                method: "GET",
-                model: "includeUser",
-                selects: ["id", "name", "address.street", "address.zipcode"],
-                duplicate: false,
-                on: "userId",
-                foreign: "id",
-                local: "id",
-              },
+              Include.buildIncludeQueryList({
+                requestTo: "https://jsonplaceholder.typicode.com/users",
+                methodIs: "GET",
+                modelName: "includeUser",
+                selectFields: [
+                  "id",
+                  "name",
+                  "address.street",
+                  "address.zipcode",
+                ],
+                isDuplicate: false,
+                valueFrom: "userId",
+                sendName: "id",
+                mappingBy: "id",
+              }),
+              // {
+              //   url: "https://jsonplaceholder.typicode.com/users",
+              //   method: "GET",
+              //   model: "includeUser",
+              //   selects: ["id", "name", "address.street", "address.zipcode"],
+              //   duplicate: false,
+              //   on: "userId",
+              //   foreign: "id",
+              //   local: "id",
+              // },
             ],
           },
         ],
