@@ -284,7 +284,7 @@ export class Include implements IncludeInterface {
   public isShouldHaveFrame(data: any): boolean {
     const bool: boolean =
       Array.isArray(data) &&
-      this.frame?.length === 0 &&
+      (!this.frame || this.frame?.length === 0) &&
       this.branches!!.length > 0;
     return bool;
   }
