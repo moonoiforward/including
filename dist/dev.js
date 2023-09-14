@@ -12,42 +12,23 @@ function dev() {
         },
         list: [
             {
-                url: "https://jsonplaceholder.typicode.com/users",
+                url: "https://jsonplaceholder.typicode.com/posts",
                 method: "GET",
-                model: "users",
-                query: {
-                    id: [1, 2, 3, 4, 5], // sample only 5 users by id[]=1&id[]=2...
-                },
-                sessions: {},
-                includes: [
+                model: "posts",
+                branches: [
                     {
-                        url: "https://jsonplaceholder.typicode.com/posts",
+                        url: "https://jsonplaceholder.typicode.com/users",
                         method: "GET",
-                        model: "includePosts",
-                        on: "id",
-                        duplicate: false,
-                        foreign: "userId",
-                        each: true,
-                        selects: ["id", "body", "includeUser"],
-                        includes: [
-                            {
-                                url: "https://jsonplaceholder.typicode.com/users",
-                                method: "GET",
-                                model: "includeUser",
-                                selects: ["id", "name", "address.street", "address.zipcode"],
-                                duplicate: false,
-                                on: "userId",
-                                foreign: "id",
-                                local: "id",
-                            },
-                        ],
+                        model: "brancheUsers",
+                        on: "userId",
+                        foreign: "id",
                     },
                 ],
             },
         ],
     })
         .then((data) => {
-        console.log(JSON.stringify(data));
+        console.log(JSON.stringify(data, null, 4));
     })
         .catch((e) => { });
 }

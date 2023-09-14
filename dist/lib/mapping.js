@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.mapDataFromList = exports.createIdentities = exports.mapKeynameForIncludes = exports.mapIdentities = exports.createQuery = exports.mapParams = exports.replaceUrl = void 0;
-const Session_1 = require("../models/Session");
 const regex_1 = require("./regex");
+const Session_1 = require("../models/Session");
 function replaceUrl(url, replaces) {
     Object.keys(replaces).forEach((key) => {
         url = url.replace(key, replaces[key]);

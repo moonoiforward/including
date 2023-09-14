@@ -1,3 +1,32 @@
+import { ObjectJson } from "./ObjectJson";
+interface CommonIncludeSentence {
+    requestTo: string;
+    methodIs: string;
+    modelName: string;
+    headerIs?: ObjectJson;
+    queryIs?: ObjectJson;
+    bodyIs?: ObjectJson;
+    selectFields?: string[];
+    excludeFields?: string[];
+    dataAt?: string;
+    hasIncludes?: IncludeInterface[];
+    hasBranches?: IncludeInterface[];
+}
+interface IncludSentenceQueryListParameter extends CommonIncludeSentence {
+    valueFrom: string;
+    sendName: string;
+    delimiterIs?: string;
+    mappingBy: string;
+    isDuplicate?: boolean;
+}
+interface IncludSentenceQueryOnParamsParameter extends CommonIncludeSentence {
+    paramsFrom: string[];
+    sendName: string;
+}
+interface IncludSentenceQueryEachItemParameter extends CommonIncludeSentence {
+    valueFrom: string;
+    sendName: string;
+}
 export interface IncludeInterface {
     /**
      * URL for making an HTTP request.
@@ -159,5 +188,9 @@ export declare class Include implements IncludeInterface {
     constructor(data: any);
     static fromJSON(data: any): Include;
     isShouldHaveFrame(data: any): boolean;
+    static buildIncludeQueryList(params: IncludSentenceQueryListParameter): Include;
+    static buildIncludeQueryEachByParams(params: IncludSentenceQueryOnParamsParameter): Include;
+    static buildIncludeQueryEach(params: IncludSentenceQueryEachItemParameter): Include;
 }
+export {};
 //# sourceMappingURL=Include.d.ts.map

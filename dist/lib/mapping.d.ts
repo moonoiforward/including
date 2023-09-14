@@ -1,5 +1,5 @@
-import { Identity } from "../models/Identity";
-import { Include } from "../models/Include";
+import { Identity } from '../models/Identity';
+import { Include } from '../models/Include';
 export declare function replaceUrl(url: string, replaces: any): string;
 export declare function mapParams(item: string, identity: any): string;
 export declare function createQuery({ query, sessionId, }: {

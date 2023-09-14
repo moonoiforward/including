@@ -63,9 +63,60 @@ class Include {
     isShouldHaveFrame(data) {
         var _a;
         const bool = Array.isArray(data) &&
-            ((_a = this.frame) === null || _a === void 0 ? void 0 : _a.length) === 0 &&
+            (!this.frame || ((_a = this.frame) === null || _a === void 0 ? void 0 : _a.length) === 0) &&
             this.branches.length > 0;
         return bool;
+    }
+    static buildIncludeQueryList(params) {
+        const include = Include.fromJSON({
+            url: params.requestTo,
+            method: params.methodIs,
+            model: params.modelName,
+            header: params.headerIs,
+            query: params.headerIs,
+            body: params.headerIs,
+            at: params.dataAt,
+            on: params.valueFrom,
+            foreign: params.sendName,
+            local: params.mappingBy,
+            duplicate: params.isDuplicate,
+            selects: params.selectFields,
+            excludes: params.excludeFields,
+        });
+        return include;
+    }
+    static buildIncludeQueryEachByParams(params) {
+        const include = Include.fromJSON({
+            url: params.requestTo,
+            method: params.methodIs,
+            model: params.modelName,
+            header: params.headerIs,
+            query: params.headerIs,
+            body: params.headerIs,
+            at: params.dataAt,
+            params: params.paramsFrom,
+            foreign: params.sendName,
+            selects: params.selectFields,
+            excludes: params.excludeFields,
+        });
+        return include;
+    }
+    static buildIncludeQueryEach(params) {
+        const include = Include.fromJSON({
+            url: params.requestTo,
+            method: params.methodIs,
+            model: params.modelName,
+            header: params.headerIs,
+            query: params.headerIs,
+            body: params.headerIs,
+            at: params.dataAt,
+            on: params.valueFrom,
+            foreign: params.sendName,
+            each: true,
+            selects: params.selectFields,
+            excludes: params.excludeFields,
+        });
+        return include;
     }
 }
 exports.Include = Include;

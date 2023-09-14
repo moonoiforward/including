@@ -1,9 +1,18 @@
 export declare class Session {
     static isSaveLogs: boolean;
-    static data: any;
+    static data: {
+        [sessionId: string]: {
+            headers: any;
+            session: any;
+            replaces: any;
+            timeout: number;
+            logs: any[];
+        };
+    };
     static setSaveLogs(isSaveLogs: boolean): void;
     static insertLog(id: string, value: any): void;
-    static getLogs(id: string): any;
+    static getTimeout(id: string): number;
+    static getLogs(id: string): any[];
     static getHeaders(id: string): any;
     static getSessions(id: string): any;
     static getReplaces(id: string): any;

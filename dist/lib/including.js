@@ -14,12 +14,70 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.including = void 0;
 const my_object_1 = __importDefault(require("./my-object"));
+const my_string_1 = __importDefault(require("./my-string"));
 const http_client_1 = require("./http-client");
 const Include_1 = require("../models/Include");
+const regex_1 = require("./regex");
 const Session_1 = require("../models/Session");
 const mapping_1 = require("./mapping");
-const regex_1 = require("./regex");
-const my_string_1 = __importDefault(require("./my-string"));
+function including(param) {
+    return new Promise((resolveMain, rejectMain) => {
+        const list = param.list.map((item) => Include_1.Include.fromJSON(item));
+        const id = my_string_1.default.generateId();
+        Session_1.Session.initSession(id, {
+            headers: param.headers,
+            replaces: param.replaces,
+            timeout: param.timeout,
+        });
+        const results = {};
+        const promises = [];
+        for (let item of list) {
+            const promise = request(item, {
+                sessionId: id,
+            });
+            promise
+                .then((data) => {
+                results[item.model] = data;
+                if (item.onDone) {
+                    try {
+                        if (data.isError) {
+                            item.onDone(data.error, null);
+                        }
+                        else {
+                            item.onDone(null, data);
+                        }
+                    }
+                    catch (error) { }
+                }
+            })
+                .catch((err) => {
+                if (item.onDone) {
+                    try {
+                        item.onDone(err, null);
+                    }
+                    catch (error) { }
+                }
+                results[item.model] = {
+                    errror: err,
+                };
+            });
+            promises.push(promise);
+        }
+        Promise.all(promises)
+            .then((_results) => __awaiter(this, void 0, void 0, function* () {
+            resolveMain(results);
+            if (Session_1.Session.isSaveLogs) {
+                try {
+                    yield Session_1.Session.writeLog(id);
+                }
+                catch (error) { }
+            }
+            Session_1.Session.clearSession(id);
+        }))
+            .catch((e) => { });
+    });
+}
+exports.including = including;
 function childrening(inc, { sessionId, flatData, keys, dimension, isBranch, }) {
     return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
         let result = {};
@@ -118,7 +176,7 @@ function requestForChildren({ sessionId, identity, identities, inc, where, dimen
             headers: inc._headers || headers,
             query: inc._query || query,
             body: inc._body || body,
-            timeout: inc.timeout,
+            timeout: inc.timeout || Session_1.Session.getTimeout(sessionId),
         };
         let url = (0, mapping_1.replaceUrl)(inc.url, Session_1.Session.getReplaces(sessionId));
         yield httpClient
@@ -283,7 +341,7 @@ function request(inc, { sessionId, }) {
             method: inc.method,
             headers: Object.assign(Object.assign({}, Session_1.Session.getHeaders(sessionId)), inc.headers),
             body: inc.body,
-            timeout: inc.timeout,
+            timeout: inc.timeout || Session_1.Session.getTimeout(sessionId),
         };
         httpClient
             .request(url, params)
@@ -380,61 +438,3 @@ function selectsAndExcludes(data, inc) {
     }
     return my_object_1.default.unflatten(selectData);
 }
-function including(param) {
-    return new Promise((resolveMain, rejectMain) => {
-        var _a;
-        const list = (_a = param.list) === null || _a === void 0 ? void 0 : _a.map((item) => Include_1.Include.fromJSON(item));
-        const id = my_string_1.default.generateId();
-        Session_1.Session.initSession(id, {
-            headers: param.headers,
-            replaces: param.replaces,
-        });
-        const results = {};
-        const promises = [];
-        for (let item of list) {
-            const promise = request(item, {
-                sessionId: id,
-            });
-            promise
-                .then((data) => {
-                results[item.model] = data;
-                if (item.onDone) {
-                    try {
-                        if (data.isError) {
-                            item.onDone(data.error, null);
-                        }
-                        else {
-                            item.onDone(null, data);
-                        }
-                    }
-                    catch (error) { }
-                }
-            })
-                .catch((err) => {
-                if (item.onDone) {
-                    try {
-                        item.onDone(err, null);
-                    }
-                    catch (error) { }
-                }
-                results[item.model] = {
-                    errror: err,
-                };
-            });
-            promises.push(promise);
-        }
-        Promise.all(promises)
-            .then((_results) => __awaiter(this, void 0, void 0, function* () {
-            resolveMain(results);
-            if (Session_1.Session.isSaveLogs) {
-                try {
-                    yield Session_1.Session.writeLog(id);
-                }
-                catch (error) { }
-            }
-            Session_1.Session.clearSession(id);
-        }))
-            .catch((e) => { });
-    });
-}
-exports.including = including;

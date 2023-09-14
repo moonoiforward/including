@@ -9,6 +9,9 @@ class Session {
     static insertLog(id, value) {
         Session.data[id].logs.push(value);
     }
+    static getTimeout(id) {
+        return Session.data[id].timeout;
+    }
     static getLogs(id) {
         return Session.data[id].logs;
     }
@@ -28,9 +31,11 @@ class Session {
         Session.data[id].session[key] = value;
     }
     static initSession(id, params) {
+        const timeoutDefault = 1000 * 60 * 2;
         Session.data[id] = {
             headers: (params === null || params === void 0 ? void 0 : params.headers) || {},
             replaces: (params === null || params === void 0 ? void 0 : params.replaces) || {},
+            timeout: (params === null || params === void 0 ? void 0 : params.timeout) || timeoutDefault,
             session: {},
             logs: [],
         };
