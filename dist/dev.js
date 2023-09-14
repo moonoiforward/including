@@ -15,13 +15,22 @@ function dev() {
                 url: "https://jsonplaceholder.typicode.com/posts",
                 method: "GET",
                 model: "posts",
+                query: {
+                    id: [1, 2, 3, 4, 5],
+                },
+                onSuccess: (err, client, data) => {
+                    console.log(client);
+                },
                 branches: [
                     {
                         url: "https://jsonplaceholder.typicode.com/users",
                         method: "GET",
                         model: "brancheUsers",
-                        on: "userId",
+                        on: "data.userId",
                         foreign: "id",
+                        onSuccess: (err, client, data) => {
+                            console.log(client);
+                        },
                     },
                 ],
             },
