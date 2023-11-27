@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.including = void 0;
+exports.onSuccess = exports.including = void 0;
 const my_object_1 = __importDefault(require("./my-object"));
 const my_string_1 = __importDefault(require("./my-string"));
 const http_client_1 = require("./http-client");
@@ -332,6 +332,7 @@ function onSuccess({ sessionId, inc, data, dimension, }) {
         return my_object_1.default.unflatten(flatData);
     });
 }
+exports.onSuccess = onSuccess;
 function request(inc, { sessionId, }) {
     return new Promise((resolve, reject) => {
         let url = (0, mapping_1.replaceUrl)(inc.url, Session_1.Session.getReplaces(sessionId));

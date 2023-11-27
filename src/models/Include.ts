@@ -68,6 +68,11 @@ export interface IncludeInterface {
   headers?: any;
 
   /**
+   * For replaces
+   */
+  replaces?: any;
+
+  /**
    * Starter body for the HTTP request (optional).
    */
   body?: any;

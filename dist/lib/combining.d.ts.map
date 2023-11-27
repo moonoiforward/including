@@ -1,0 +1,1 @@
+{"version":3,"file":"combining.d.ts","sourceRoot":"","sources":["../../src/lib/combining.ts"],"names":[],"mappings":"AAAA,OAAO,EAAW,gBAAgB,EAAW,MAAM,WAAW,CAAC;AAI/D;;;;GAIG;AACH,wBAAgB,SAAS,CACvB,IAAI,EAAE,GAAG,EACT,KAAK,EAAE;IACL,OAAO,CAAC,EAAE,GAAG,CAAC;IACd,QAAQ,CAAC,EAAE,GAAG,CAAC;IACf,OAAO,CAAC,EAAE,MAAM,CAAC;IACjB,QAAQ,EAAE,gBAAgB,EAAE,CAAC;CAC9B,oBAgBF"}

@@ -23,14 +23,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.including = void 0;
 const dev_1 = require("./dev");
 const models_1 = require("./models");
 __exportStar(require("./lib/including"), exports);
+__exportStar(require("./lib/combining"), exports);
 __exportStar(require("./models/Action"), exports);
 __exportStar(require("./models/Include"), exports);
-var including_1 = require("./lib/including");
-Object.defineProperty(exports, "including", { enumerable: true, get: function () { return including_1.including; } });
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         if (process.env.npm_lifecycle_event != "dev")

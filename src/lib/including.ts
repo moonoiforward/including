@@ -1,10 +1,10 @@
-import MyObject from './my-object';
-import MyString from './my-string';
-import { HttpClient } from './http-client';
-import { Identity } from '../models/Identity';
-import { Include, IncludeInterface } from '../models/Include';
-import { isNotNumber } from './regex';
-import { Session } from '../models/Session';
+import MyObject from "./my-object";
+import MyString from "./my-string";
+import { HttpClient } from "./http-client";
+import { Identity } from "../models/Identity";
+import { Include, IncludeInterface } from "../models/Include";
+import { isNotNumber } from "./regex";
+import { Session } from "../models/Session";
 import {
   createIdentities,
   createQuery,
@@ -301,7 +301,7 @@ function requestForChildren({
     resolve(flatData);
   });
 }
-async function onSuccess({
+export async function onSuccess({
   sessionId,
   inc,
   data,
