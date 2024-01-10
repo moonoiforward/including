@@ -195,6 +195,7 @@ export declare class Include implements IncludeInterface {
     static buildIncludeQueryList(params: IncludSentenceQueryListParameter): Include;
     static buildIncludeQueryEachByParams(params: IncludSentenceQueryOnParamsParameter): Include;
     static buildIncludeQueryEach(params: IncludSentenceQueryEachItemParameter): Include;
+    copyWith(obj: any): Include;
 }
 export {};
 //# sourceMappingURL=Include.d.ts.map

@@ -118,5 +118,10 @@ class Include {
         });
         return include;
     }
+    copyWith(obj) {
+        const newInc = new Include(this);
+        Object.assign(newInc, obj);
+        return newInc;
+    }
 }
 exports.Include = Include;

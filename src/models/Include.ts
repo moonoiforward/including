@@ -353,4 +353,10 @@ export class Include implements IncludeInterface {
     } as IncludeInterface);
     return include;
   }
+
+  copyWith(obj: any): Include {
+    const newInc = new Include(this);
+    Object.assign(newInc, obj);
+    return newInc;
+  }
 }

@@ -102,8 +102,9 @@ function childrening(
     if (inc.each || inc.params) {
       const where: any = {};
       for (let identity of identities) {
+        let url = inc.url;
         if (inc.params) {
-          inc.url = mapParams(inc.url, identity);
+          url = mapParams(inc.url, identity);
         } else if (inc.foreign) {
           where[inc.foreign] = identity.value;
         }
@@ -111,7 +112,9 @@ function childrening(
           sessionId,
           identity: identity,
           identities: identities,
-          inc,
+          inc: inc.copyWith({
+            url: url,
+          }),
           where,
           dimension,
           isBranch,

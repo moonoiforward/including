@@ -90,8 +90,9 @@ function childrening(inc, { sessionId, flatData, keys, dimension, isBranch, }) {
         if (inc.each || inc.params) {
             const where = {};
             for (let identity of identities) {
+                let url = inc.url;
                 if (inc.params) {
-                    inc.url = (0, mapping_1.mapParams)(inc.url, identity);
+                    url = (0, mapping_1.mapParams)(inc.url, identity);
                 }
                 else if (inc.foreign) {
                     where[inc.foreign] = identity.value;
@@ -100,7 +101,9 @@ function childrening(inc, { sessionId, flatData, keys, dimension, isBranch, }) {
                     sessionId,
                     identity: identity,
                     identities: identities,
-                    inc,
+                    inc: inc.copyWith({
+                        url: url,
+                    }),
                     where,
                     dimension,
                     isBranch,
