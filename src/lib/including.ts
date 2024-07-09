@@ -269,7 +269,7 @@ function requestForChildren({
           flatData[keyName] = data;
         } else if (inc.params) {
           let keyName = keyNames[0];
-          if (keyName.includes("_.")) {
+          if (keyName.indexOf("_.") === 0) {
             keyName = keyName.replace("_.", "");
           }
           flatData[keyName] = data;

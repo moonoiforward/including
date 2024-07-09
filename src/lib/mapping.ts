@@ -154,7 +154,7 @@ export function createIdentities({
       const lengthList = params.map((param) => param.split(".").length);
       const min = Math.min.apply(null, lengthList);
       let keySplit = key.split(".");
-      if (keySplit.length) {
+      if (keySplit.length === 1) {
         keySplit = ["_", ...keySplit];
       }
       const keyForSame = keySplit.slice(0, min).join(".");

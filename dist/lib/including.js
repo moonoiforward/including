@@ -231,7 +231,7 @@ function requestForChildren({ sessionId, identity, identities, inc, where, dimen
             }
             else if (inc.params) {
                 let keyName = keyNames[0];
-                if (keyName.includes("_.")) {
+                if (keyName.indexOf("_.") === 0) {
                     keyName = keyName.replace("_.", "");
                 }
                 flatData[keyName] = data;

@@ -114,7 +114,7 @@ function dev() {
         },
         list: [
             {
-                url: `CMS_SERVICE_URL/data-book-banks/668ca0b36f5fac9a249d5320`,
+                url: `CMS_SERVICE_URL/data-book-banks`,
                 model: "bookBanks",
                 at: "data",
                 method: "GET",
@@ -138,7 +138,7 @@ function dev() {
                     {
                         url: "MASTER_SERVICE_URL/bankBranches/where/bankCode/bankBranchCode/=/$1/$2",
                         model: "includeBankBranch",
-                        params: ["bankCode", "bankBranchCode"],
+                        params: ["list.bankCode", "list.bankBranchCode"],
                         query: { mode: "one" },
                         method: "GET",
                         at: "data",
