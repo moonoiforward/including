@@ -66,25 +66,31 @@ exports.mapIdentities = mapIdentities;
  * @returns
  */
 function mapKeynameForIncludes({ inc, identity, flatData, identities, }) {
+    var _a;
     const keyNames = [];
     if (identity) {
         let keyNameList = identity.key.split(".");
         let keyName = "";
-        if (keyNameList.length > 1) {
-            keyNameList.pop();
-            const last = keyNameList[keyNameList.length - 1];
-            if ((0, regex_1.isNotNumber)(last)) {
+        if ((_a = inc.params) === null || _a === void 0 ? void 0 : _a.length) {
+            keyName = identity.key;
+        }
+        else {
+            if (keyNameList.length > 1) {
                 keyNameList.pop();
-            }
-            if (keyNameList.length) {
-                keyName = keyNameList.join(".") + "." + inc.model;
+                const last = keyNameList[keyNameList.length - 1];
+                if ((0, regex_1.isNotNumber)(last)) {
+                    keyNameList.pop();
+                }
+                if (keyNameList.length) {
+                    keyName = keyNameList.join(".") + "." + inc.model;
+                }
+                else {
+                    keyName = inc.model;
+                }
             }
             else {
                 keyName = inc.model;
             }
-        }
-        else {
-            keyName = inc.model;
         }
         keyNames.push(keyName);
         delete flatData[keyName];

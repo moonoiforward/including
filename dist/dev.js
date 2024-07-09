@@ -115,27 +115,27 @@ function dev() {
         list: [
             {
                 url: `CMS_SERVICE_URL/data-customer-requests/668cc0c96f5fac9a249d643c`,
-                model: 'data_customer_requests',
-                at: 'data',
-                method: 'GET',
+                model: "data_customer_requests",
+                at: "data",
+                method: "GET",
                 includes: [
                     {
-                        url: 'MASTER_SERVICE_URL/banks/by/bankCode/$1',
-                        model: 'includeNewBank',
-                        params: ['newData.bankCode'],
-                        method: 'GET',
-                        at: 'data',
+                        url: "MASTER_SERVICE_URL/banks/by/bankCode/$1",
+                        model: "includeNewBank",
+                        params: ["newData.bankCode"],
+                        method: "GET",
+                        at: "data",
                     },
                     {
-                        url: 'MASTER_SERVICE_URL/bankBranches/where/bankCode/bankBranchCode/=/$1/$2',
-                        model: 'includeNewBankBranch',
-                        params: ['newData.bankCode', 'newData.bankBranchCode'],
-                        query: { mode: 'one' },
-                        method: 'GET',
-                        at: 'data',
+                        url: "MASTER_SERVICE_URL/bankBranches/where/bankCode/bankBranchCode/=/$1/$2",
+                        model: "includeNewBankBranch",
+                        params: ["newData.bankCode", "newData.bankBranchCode"],
+                        query: { mode: "one" },
+                        method: "GET",
+                        at: "data",
                     },
-                ]
-            }
+                ],
+            },
         ],
     })
         .then((data) => {
