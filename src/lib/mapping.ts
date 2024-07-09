@@ -157,7 +157,7 @@ export function createIdentities({
       const lengthList = params.map((param) => param.split(".").length);
       const min = Math.min.apply(null, lengthList);
       let keySplit = key.split(".");
-      const isHaveNumber = keySplit.filter((k) => isNumber(k));
+      const isHaveNumber = keySplit.find((k) => isNumber(k));
       if (keySplit.length === 1) {
         keySplit = ["_", ...keySplit];
       } else if (!isHaveNumber) {

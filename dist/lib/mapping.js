@@ -146,7 +146,7 @@ function createIdentities({ inc, keys, flatData, }) {
             const lengthList = params.map((param) => param.split(".").length);
             const min = Math.min.apply(null, lengthList);
             let keySplit = key.split(".");
-            const isHaveNumber = keySplit.filter((k) => (0, regex_1.isNumber)(k));
+            const isHaveNumber = keySplit.find((k) => (0, regex_1.isNumber)(k));
             if (keySplit.length === 1) {
                 keySplit = ["_", ...keySplit];
             }
