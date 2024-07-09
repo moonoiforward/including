@@ -143,6 +143,9 @@ function createIdentities({ inc, keys, flatData, }) {
             if (keySplit.length === 1) {
                 keySplit = ["_", ...keySplit];
             }
+            else if (!(0, regex_1.isNumber)(keySplit[0])) {
+                keySplit = ["_", ...keySplit];
+            }
             const keyForSame = keySplit.slice(0, min).join(".");
             if (!sameItem[keyForSame]) {
                 sameItem[keyForSame] = [];

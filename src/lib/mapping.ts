@@ -1,7 +1,7 @@
-import { Identity } from '../models/Identity';
-import { Include } from '../models/Include';
-import { isNotNumber } from './regex';
-import { Session } from '../models/Session';
+import { Identity } from "../models/Identity";
+import { Include } from "../models/Include";
+import { isNotNumber, isNumber } from "./regex";
+import { Session } from "../models/Session";
 export function replaceUrl(url: string, replaces: any) {
   Object.keys(replaces).forEach((key) => {
     url = url.replace(key, replaces[key]);
@@ -155,6 +155,8 @@ export function createIdentities({
       const min = Math.min.apply(null, lengthList);
       let keySplit = key.split(".");
       if (keySplit.length === 1) {
+        keySplit = ["_", ...keySplit];
+      } else if (!isNumber(keySplit[0])) {
         keySplit = ["_", ...keySplit];
       }
       const keyForSame = keySplit.slice(0, min).join(".");
