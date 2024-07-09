@@ -81,20 +81,23 @@ export function mapKeynameForIncludes({
   if (identity) {
     let keyNameList = identity.key.split(".");
     let keyName = "";
-
-    if (keyNameList.length > 1) {
-      keyNameList.pop();
-      const last = keyNameList[keyNameList.length - 1];
-      if (isNotNumber(last)) {
+    if (inc.params?.length) {
+      keyName = identity.key;
+    } else {
+      if (keyNameList.length > 1) {
         keyNameList.pop();
-      }
-      if (keyNameList.length) {
-        keyName = keyNameList.join(".") + "." + inc.model;
+        const last = keyNameList[keyNameList.length - 1];
+        if (isNotNumber(last)) {
+          keyNameList.pop();
+        }
+        if (keyNameList.length) {
+          keyName = keyNameList.join(".") + "." + inc.model;
+        } else {
+          keyName = inc.model;
+        }
       } else {
         keyName = inc.model;
       }
-    } else {
-      keyName = inc.model;
     }
     keyNames.push(keyName);
     delete flatData[keyName];
