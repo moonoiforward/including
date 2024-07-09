@@ -139,7 +139,10 @@ function createIdentities({ inc, keys, flatData, }) {
         for (let key of filterKeys) {
             const lengthList = params.map((param) => param.split(".").length);
             const min = Math.min.apply(null, lengthList);
-            const keySplit = key.split(".");
+            let keySplit = key.split(".");
+            if (keySplit.length) {
+                keySplit = ["_", ...keySplit];
+            }
             const keyForSame = keySplit.slice(0, min).join(".");
             if (!sameItem[keyForSame]) {
                 sameItem[keyForSame] = [];

@@ -175,7 +175,7 @@ function requestForChildren({ sessionId, identity, identities, inc, where, dimen
             body = Object.assign(Object.assign({}, body), where);
         }
         const requestOption = {
-            methid: inc.method,
+            method: inc.method,
             headers: inc._headers || headers,
             query: inc._query || query,
             body: inc._body || body,
@@ -230,7 +230,10 @@ function requestForChildren({ sessionId, identity, identities, inc, where, dimen
                 flatData[keyName] = data;
             }
             else if (inc.params) {
-                const keyName = keyNames[0];
+                let keyName = keyNames[0];
+                if (keyName.includes("_.")) {
+                    keyName = keyName.replace("_.", "");
+                }
                 flatData[keyName] = data;
             }
             else if (data) {

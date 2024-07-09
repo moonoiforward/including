@@ -107,42 +107,114 @@ function dev() {
             JSON_PLACE_HOLDER: "https://jsonplaceholder.typicode.com",
             MAIN_SERVICE_URL: "https://kbs-dev.cnes.co.th/gateway/no-auth-main-service",
             CMS_SERVICE_URL: "https://kbs-dev.cnes.co.th/gateway/no-auth-cms-service",
+            MASTER_SERVICE_URL: "https://kbs-dev.cnes.co.th/gateway/masters",
         },
         headers: {
             "x-consumer-id": 1,
         },
         list: [
             {
-                url: `CMS_SERVICE_URL/data-labor-registers`,
-                query: {},
-                model: "data_labor_registers",
+                url: `CMS_SERVICE_URL/data-book-banks/668ca0b36f5fac9a249d5320`,
+                model: "bookBanks",
                 at: "data",
                 method: "GET",
                 includes: [
+                    // {
+                    //   url: "CMS_SERVICE_URL/customers",
+                    //   model: "includeCustomer",
+                    //   on: "customerCode",
+                    //   method: "GET",
+                    //   at: "data.list",
+                    //   local: "customerCode",
+                    //   foreign: "filter[customerCode]",
+                    // },
+                    // {
+                    //   url: "MASTER_SERVICE_URL/banks/by/bankCode/$1",
+                    //   model: "includeBank",
+                    //   params: ["bankCode"],
+                    //   method: "GET",
+                    //   at: "data",
+                    // },
                     {
-                        url: "CMS_SERVICE_URL/data-contractors",
-                        model: "includeContractors",
-                        on: "list.contractorId",
+                        url: "MASTER_SERVICE_URL/bankBranches/where/bankCode/bankBranchCode/=/$1/$2",
+                        model: "includeBankBranch",
+                        params: ["bankCode", "bankBranchCode"],
+                        query: { mode: "one" },
                         method: "GET",
-                        at: "data.list",
-                        local: "quotaNumber",
-                        foreign: "filter[quotaNumber]",
-                        includes: [
-                            {
-                                url: `CMS_SERVICE_URL/customers/$1`,
-                                params: ["customerCode"],
-                                model: "includeCustomers",
-                                at: "data",
-                                method: "GET",
-                            },
-                        ],
+                        at: "data",
                     },
+                    // {
+                    //   url: "MASTER_SERVICE_URL/cog_approve_extensions/$1",
+                    //   model: "includeApproveExtension",
+                    //   params: ["approveExtensionId"],
+                    //   method: "GET",
+                    //   at: "data",
+                    //   includes: [
+                    //     {
+                    //       url: "MASTER_SERVICE_URL/extensionAreas",
+                    //       method: "GET",
+                    //       model: "includeExtensionArea",
+                    //       on: "extensionAreas.extensionAreasCode",
+                    //       at: "data.list",
+                    //       local: "extensionAreasCode",
+                    //       foreign: "filter[extensionAreasCode]",
+                    //     },
+                    //     {
+                    //       url: "MASTER_SERVICE_URL/approveTypes",
+                    //       method: "GET",
+                    //       model: "includeApproveTypes",
+                    //       on: "approveTypeId",
+                    //       at: "data.list",
+                    //       local: "id",
+                    //       foreign: "filter[id_isInt]",
+                    //     },
+                    //     {
+                    //       url: "MASTER_SERVICE_URL/cog_approve_sequences",
+                    //       method: "GET",
+                    //       model: "includeApproveSequence",
+                    //       query: {
+                    //         sort: { order: 1 },
+                    //       },
+                    //       each: true,
+                    //       on: "_id",
+                    //       at: "data.list",
+                    //       local: "approveExtensionId",
+                    //       foreign: "filter[approveExtensionId]",
+                    //       includes: [
+                    //         {
+                    //           url: "MAIN_SERVICE_URL/users",
+                    //           method: "GET",
+                    //           model: "includeApprover",
+                    //           on: "approvers.userCode",
+                    //           at: "data.list",
+                    //           local: "userCode",
+                    //           foreign: "filter[userCode]",
+                    //         },
+                    //       ],
+                    //     },
+                    //   ],
+                    // },
+                    // {
+                    //   url: "CMS_SERVICE_URL/attachments",
+                    //   method: "GET",
+                    //   model: "includeAttachments",
+                    //   on: "code",
+                    //   each: true,
+                    //   query: {
+                    //     filter: {
+                    //       module: "data_book_banks",
+                    //     },
+                    //   },
+                    //   at: "data.list",
+                    //   local: "id",
+                    //   foreign: "filter[id]",
+                    // },
                 ],
             },
         ],
     })
         .then((data) => {
-        // console.log(JSON.stringify(data));
+        console.log(JSON.stringify(data));
     })
         .catch((e) => {
         console.log(e);

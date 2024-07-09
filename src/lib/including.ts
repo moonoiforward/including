@@ -212,7 +212,7 @@ function requestForChildren({
       };
     }
     const requestOption = {
-      methid: inc.method,
+      method: inc.method,
       headers: inc._headers || headers,
       query: inc._query || query,
       body: inc._body || body,
@@ -268,7 +268,10 @@ function requestForChildren({
           const keyName = keyNames[0];
           flatData[keyName] = data;
         } else if (inc.params) {
-          const keyName = keyNames[0];
+          let keyName = keyNames[0];
+          if (keyName.includes("_.")) {
+            keyName = keyName.replace("_.", "");
+          }
           flatData[keyName] = data;
         } else if (data) {
           flatData = mapDataFromList({
