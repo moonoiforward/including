@@ -22,7 +22,7 @@ export interface IIncludingParam {
   timeout?: number;
 }
 export function including(param: IIncludingParam) {
-  return new Promise((resolveMain, rejectMain) => {
+  return new Promise(async (resolveMain, rejectMain) => {
     const list: Include[] = param.list.map((item) => Include.fromJSON(item));
     const id = MyString.generateId();
     Session.initSession(id, {
@@ -46,14 +46,18 @@ export function including(param: IIncludingParam) {
               } else {
                 item.onDone(null, data);
               }
-            } catch (error) {}
+            } catch (error) {
+              console.error('Error in onDone callback:', error);
+            }
           }
         })
         .catch((err) => {
           if (item.onDone) {
             try {
               item.onDone(err, null);
-            } catch (error) {}
+            } catch (error) {
+              console.error('Error in onDone callback:', error);
+            }
           }
           results[item.model] = {
             error: err,
@@ -61,17 +65,30 @@ export function including(param: IIncludingParam) {
         });
       promises.push(promise);
     }
-    Promise.all(promises)
-      .then(async (_results) => {
-        resolveMain(results);
-        if (Session.isSaveLogs) {
-          try {
-            await Session.writeLog(id);
-          } catch (error) {}
+
+    try {
+      await Promise.all(promises);
+
+      if (Session.isSaveLogs) {
+        try {
+          await Session.writeLog(id);
+        } catch (error) {
+          console.error('Error writing session logs:', error);
         }
+      }
+
+      resolveMain(results);
+    } catch (error) {
+      console.error('Error in promise execution:', error);
+      rejectMain(error);
+    } finally {
+      // Always cleanup session, regardless of success or failure
+      try {
         Session.clearSession(id);
-      })
-      .catch((e) => {});
+      } catch (error) {
+        console.error('Error clearing session:', error);
+      }
+    }
   });
 }
 
@@ -232,7 +249,9 @@ function requestForChildren({
               },
               data
             );
-          } catch (error) {}
+          } catch (error) {
+            console.error('Error in onSuccess callback:', error);
+          }
         }
         if (inc.frame?.length) {
           data = {
@@ -255,7 +274,10 @@ function requestForChildren({
             sessionId,
             data: data,
             dimension: dimension + 1,
-          }).catch((e) => {});
+          }).catch((e) => {
+            console.error('Error processing nested includes:', e);
+            return data; // Return original data if nested processing fails
+          });
         }
         if (inc.selects || inc.excludes) {
           data = selectsAndExcludes(data, inc);
@@ -417,7 +439,9 @@ function request(
               },
               data
             );
-          } catch (error) {}
+          } catch (error) {
+            console.error('Error in onSuccess callback:', error);
+          }
         }
         if (typeof data !== "object") {
           resolve(data);
@@ -440,7 +464,9 @@ function request(
             for (let key of Object.keys(inc.sessions)) {
               Session.setSession(sessionId, inc.sessions[key], data[key]);
             }
-          } catch (error) {}
+          } catch (error) {
+            console.error('Error storing session values:', error);
+          }
         }
         await onSuccess({
           sessionId,
