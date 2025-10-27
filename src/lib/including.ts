@@ -56,7 +56,7 @@ export function including(param: IIncludingParam) {
             } catch (error) {}
           }
           results[item.model] = {
-            errror: err,
+            error: err,
           };
         });
       promises.push(promise);
@@ -456,7 +456,7 @@ function request(
           })
           .catch((e) => {
             data = {
-              errror: e,
+              error: e,
             };
           });
         resolve(data);
